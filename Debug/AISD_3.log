@@ -1,0 +1,3 @@
+﻿  AISD_3.cpp
+C:\Users\mariy\Desktop\5сем\АиСД\lab_3\code\AISD_3\Tree.h(182,1): error C2109: для индекса требуется массив или указатель
+C:\Users\mariy\Desktop\5сем\АиСД\lab_3\code\AISD_3\Tree.h(182): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "Tree<T>"
