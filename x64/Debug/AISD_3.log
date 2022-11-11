@@ -1,0 +1,8 @@
+﻿  AISD_3.cpp
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(12,18): warning C4838: Преобразование из "int" в "SHORT" требует сужающего преобразования.
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(12,21): warning C4838: Преобразование из "int" в "SHORT" требует сужающего преобразования.
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(503,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(502): message : во время компиляции функции-члена класс шаблон "Tree<int>::Tree(int)"
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\AISD_3.cpp(5): message : выполняется компиляция ссылки на экземпляр шаблон функции "Tree<int>::Tree(int)"
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\AISD_3.cpp(5): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "Tree<int>"
+  AISD_3.vcxproj -> C:\HWProjects\Course3\Semester5\AISD\AISD_3\x64\Debug\AISD_3.exe
