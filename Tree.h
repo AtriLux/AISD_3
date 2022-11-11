@@ -31,23 +31,23 @@ public:
 		Node* parent;
 		int size; // Кол-во занятых ключей
 
-		bool contain(int key) { // Этот метод возвращает true, если ключ key находится в вершине, иначе false.
+		bool contain(T key) { // Этот метод возвращает true, если ключ key находится в вершине, иначе false.
 			for (int i = 0; i < size; ++i)
 				if (keys[i] == key) return true;
 			return false;
 		}
 
-		void swap(int& x, int& y) {
-			int r = x;
+		void swap(T& x, T& y) {
+			T r = x;
 			x = y;
 			y = r;
 		}
 
-		void sort2(int& x, int& y) {
+		void sort2(T& x, T& y) {
 			if (x > y) swap(x, y);
 		}
 
-		void sort3(int& x, int& y, int& z) {
+		void sort3(T& x, T& y, T& z) {
 			if (x > y) swap(x, y);
 			if (x > z) swap(x, z);
 			if (y > z) swap(y, z);
@@ -59,13 +59,13 @@ public:
 			if (size == 3) sort3(keys[0], keys[1], keys[2]);
 		}
 
-		void insertToNode(int key) {  // Вставляем ключ key в вершину (не в дерево)
+		void insertToNode(T key) {  // Вставляем ключ key в вершину (не в дерево)
 			keys[size] = key;
 			size++;
 			sort();
 		}
 
-		void removeFromNode(int key) { // Удаляем ключ key из вершины (не из дерева)
+		void removeFromNode(T key) { // Удаляем ключ key из вершины (не из дерева)
 			if (size >= 1 && keys[0] == key) {
 				keys[0] = keys[1];
 				keys[1] = keys[2];
@@ -77,7 +77,7 @@ public:
 			}
 		}
 
-		void becomeNode2(int key, Node* f, Node* s) {  // Преобразовать в 2-вершину.
+		void becomeNode2(T key, Node* f, Node* s) {  // Преобразовать в 2-вершину.
 			keys[0] = key;
 			first = f;
 			second = s;
@@ -97,22 +97,29 @@ public:
 		return root;
 	};
 
-	// Основные функции
-	void treePrint(Node* node) {
-		if (node->first)
-			treePrint(node->first);
-		cout << "ldata: " << node->keys[0] << endl;
-		if (node->second)
-			treePrint(node->second);
-		if (node->size == 2) {
-			cout << "rdata: " << node->keys[1] << endl;
-		}
-		if (node->third)
-			treePrint(node->third);
+	int getCounter() {
+		return counter;
 	}
-	
+
+	int getPrevNodeCounter() {
+		return prevNodeCounter;
+	}
+
+	void resetPrevNodeCounter() {
+		prevNodeCounter = 0;
+	}
+
+	bool isEmpty() {
+		return counter == 0;
+	}
+
+	Tree<T>& operator=(const Tree<T>& other);
+
+	// Основные функции
 	void print(Node* root, int level = 0, int x = 50, int y = 0, int c = 0) { // c = 0 - корень, c = 1 - first, c = 2 - second
 		if (root) {
+			if (level == 0) system("cls");
+
 			if (c != 0) {
 				if (c == 1) x -= 40 - level * 15;
 				else if (c == 3) x += 30 - level * 10;
@@ -128,6 +135,7 @@ public:
 			printf("%d", root->keys[0]);
 			if (root->size == 2) printf(" %d", root->keys[1]);
 
+			prevNodeCounter++;
 			level++;
 			if (root->first) print(root->first, level, x, y, 1);
 			if (root->second) print(root->second, level, x, y, 2);
@@ -136,9 +144,22 @@ public:
 	}
 
 	// Вставка в дерево
-	Node* insert(Node* p, int key) { // вставка ключа key в дерево с корнем p; всегда возвращаем корень дерева, т.к. он может меняться
-		if (!p) {
-			Node* newNode = (Node*)malloc(sizeof(Node)); // если дерево пусто, то создаем первую 2-3-вершину (корень)
+	Node* insert(Node* p, T key) { // вставка ключа key в дерево с корнем p; всегда возвращаем корень дерева, т.к. он может меняться
+		prevNodeCounter++;
+		if (counter == 0) {
+			root = (Node*)malloc(sizeof(Node)); // если дерево пусто, то создаем первую 2-3-вершину (корень)
+			root->keys[0] = key;
+			root->first = nullptr;
+			root->second = nullptr;
+			root->third = nullptr;
+			root->fourth = nullptr;
+			root->parent = nullptr;
+			root->size = 1;
+			counter++;
+			return root;
+		}
+		else if (!p) {
+			Node* newNode = (Node*)malloc(sizeof(Node)); // создаем новую вершину
 			newNode->keys[0] = key;
 			newNode->first = nullptr;
 			newNode->second = nullptr;
@@ -146,10 +167,14 @@ public:
 			newNode->fourth = nullptr;
 			newNode->parent = nullptr;
 			newNode->size = 1;
+			counter++;
 			return newNode;
 		}
 
-		if (p->isLeaf()) p->insertToNode(key);
+		if (p && p->isLeaf()) {
+			p->insertToNode(key);
+			counter++;
+		}
 		else if (key <= p->keys[0]) insert(p->first, key);
 		else if ((p->size == 1) || ((p->size == 2) && key <= p->keys[1])) insert(p->second, key);
 		else insert(p->third, key);
@@ -170,6 +195,7 @@ public:
 		x->fourth = nullptr;
 		x->parent = elem->parent;
 		x->size = 1;
+		prevNodeCounter++;
 
 		Node* y = (Node*)malloc(sizeof(Node));
 		y->keys[0] = elem->keys[2];
@@ -179,12 +205,14 @@ public:
 		y->fourth = nullptr;
 		y->parent = elem->parent;
 		y->size = 1;
+		prevNodeCounter++;
 
 		if (x->first)  x->first->parent = x;    // Правильно устанавливаем "родителя" "сыновей".
 		if (x->second) x->second->parent = x;   // После разделения, "родителем" "сыновей" является "дедушка",
 		if (y->first)  y->first->parent = y;    // Поэтому нужно правильно установить указатели.
 		if (y->second) y->second->parent = y;
-
+		
+		prevNodeCounter++;
 		if (elem->parent) {
 			elem->parent->insertToNode(elem->keys[1]);
 
@@ -210,7 +238,7 @@ public:
 			}
 
 			Node* temp = elem->parent;
-			delete elem;
+			free(elem);
 			return temp;
 		}
 		else {
@@ -222,7 +250,8 @@ public:
 	}
 
 	// Поиск в дереве
-	Node* search(Node* p, int key) { // Поиск ключа key в 2-3 дереве с корнем p.
+	Node* search(Node* p, T key) { // Поиск ключа key в 2-3 дереве с корнем p.
+		prevNodeCounter++;
 		if (!p) return nullptr;
 
 		if (p->contain(key)) return p;
@@ -233,23 +262,26 @@ public:
 
 	// Поиск минимального элемента в поддереве
 	Node* searchMin(Node* p) { // Поиск узла с минимальным элементов в 2-3-дереве с корнем p.
+		prevNodeCounter++;
 		if (!p) return p;
 		if (!(p->first)) return p;
 		else return searchMin(p->first);
 	}
 
 	// Удаление из дерева
-	Node* remove(Node* p, int key) { // Удаление ключа key в 2-3-дереве с корнем p.
+	Node* remove(Node* p, T key) { // Удаление ключа key в 2-3-дереве с корнем p.
 		Node* elem = search(p, key); // Ищем узел, где находится ключ key
-
+		
+		prevNodeCounter++;
 		if (!elem) return p;
 
+		counter--;
 		Node* min = nullptr;
 		if (elem->keys[0] == key) min = searchMin(elem->second); // Ищем эквивалентный ключ
 		else min = searchMin(elem->third);
 
 		if (min) { // Меняем ключи местами
-			int& z = (key == elem->keys[0] ? elem->keys[0] : elem->keys[1]);
+			T& z = (key == elem->keys[0] ? elem->keys[0] : elem->keys[1]);
 			elem->swap(z, min->keys[0]);
 			elem = min; // Перемещаем указатель на лист, т.к. min - всегда лист
 		}
@@ -260,8 +292,9 @@ public:
 
 	// Используется после удаления для возвращения свойств дереву (использует merge или redistribute) 
 	Node* fix(Node* leaf) {
-		if (leaf->size == 0 && leaf->parent == nullptr) { // Случай 0, когда удаляем единственный ключ в дереве
-			delete leaf;
+		prevNodeCounter++;
+		if (leaf->size == 0 && leaf->parent == nullptr) { // Случай 0, когда удаляем единственный ключ в вершине
+			free(leaf);
 			return nullptr;
 		}
 		if (leaf->size != 0) { // Случай 1, когда вершина, в которой удалили ключ, имела два ключа
@@ -279,6 +312,7 @@ public:
 
 	// Перераспределение также используется при удалении
 	Node* redistribute(Node* leaf) {
+		prevNodeCounter++;
 		Node* parent = leaf->parent;
 		Node* first = parent->first;
 		Node* second = parent->second;
@@ -445,6 +479,7 @@ public:
 
 	// Слияние используется при удалении
 	Node* merge(Node* leaf) {
+		prevNodeCounter++;
 		Node* parent = leaf->parent;
 
 		if (parent->first == leaf) {
@@ -458,7 +493,7 @@ public:
 			if (parent->second->first != nullptr) parent->second->first->parent = parent->second;
 
 			parent->removeFromNode(parent->keys[0]);
-			delete parent->first;
+			free(parent->first);
 			parent->first = nullptr;
 		}
 		else if (parent->second == leaf) {
@@ -470,7 +505,7 @@ public:
 			if (parent->first->third != nullptr) parent->first->third->parent = parent->first;
 
 			parent->removeFromNode(parent->keys[0]);
-			delete parent->second;
+			free(parent->second);
 			parent->second = nullptr;
 		}
 
@@ -479,49 +514,376 @@ public:
 			if (parent->first != nullptr) temp = parent->first;
 			else temp = parent->second;
 			temp->parent = nullptr;
-			delete parent;
+			free(parent);
 			return temp;
 		}
 		return parent;
 	}
 
+	void clear(Node* node) {
+		if (node == root) root = nullptr;
+		if (node) {
+			prevNodeCounter++;
+			clear(node->first);
+			clear(node->second);
+			clear(node->third);
+			counter--;
+			if (node->size == 2) counter--;
+			free(node);
+			node = nullptr;
+		}
+		//if (counter == 0) root = nullptr;
+	}
+
+	void copy(Node* node) {
+		if (node) {
+			prevNodeCounter++;
+			insert(this->root, node->keys[0]);
+			if (node->size == 2) insert(this->root, node->keys[1]);
+			if (node->first) copy(node->first);
+			if (node->second) copy(node->second);
+			if (node->third) copy(node->third);
+		}
+	}
+
+	class Iterator // внутренний класс - итератор
+	{
+	private:
+		Node* cur = nullptr;	// текущий узел
+		T key;
+		Tree<T>* tree;
+		int counter = 1;
+	public:
+		Iterator(Tree* tree) { // конструктор итератора
+			this->tree = tree;
+		};
+		Iterator begin(Node* node) { // установка на первое значение в массиве
+			if (node->first)
+				begin(node->first);
+			else {
+				cur = node;
+				key = node->keys[0];
+			}
+			counter = 1;
+			return *this;
+		}
+		Iterator end(Node* node) { // установка на последнее значение в массиве
+			if (node->third)
+				end(node->third);
+			else if (node->second)
+				end(node->second);
+			else {
+				cur = node;
+				if (node->size == 2) key = node->keys[1];
+				else key = node->keys[0];
+			}
+			counter = tree->counter;
+			return *this;
+		}
+		Iterator& operator++(int) { // перегрузка перемещения вперед
+			if (tree->counter != counter) {
+				if (cur->isLeaf()) {
+					if (cur == cur->parent->first) {
+						if (cur->size == 1 || key == cur->keys[1]) {
+							cur = cur->parent;
+							key = cur->keys[0];
+							return *this;
+						}
+					}
+					if (cur->size == 2 && key == cur->keys[0]) {
+						key = cur->keys[1];
+					}
+					else {
+						if ((cur == cur->parent->second && !cur->parent->third) || cur == cur->parent->third) {
+							while (cur->parent) cur = cur->parent;
+							if (key > cur->keys[0] && cur->size == 2)
+								key = cur->keys[1];
+							else
+								key = cur->keys[0];
+						}
+						else if (cur == cur->parent->second && cur->parent->third) {
+							cur = cur->parent;
+							key = cur->keys[1];
+						}
+					}
+				}
+				else {
+					if (key == cur->keys[1] && cur->size == 2) {
+						cur = cur->third;
+					}
+					else {
+						cur = cur->second;
+					}
+					while (cur->first) cur = cur->first;
+					key = cur->keys[0];
+				}
+				counter++;
+			}
+			else
+				begin(tree->root);
+			return *this;
+		};
+
+		Iterator& operator--(int) { // перегрузка перемещения назад
+			if (tree->counter > 0) {
+				if (cur->isLeaf()) {
+					if (cur == cur->parent->third || cur == cur->parent->second) {
+						if (cur->size == 1 || key == cur->keys[0]) {
+							if (cur->parent->size == 2 && cur == cur->parent->third) {
+								cur = cur->parent;
+								key = cur->keys[1];
+							}
+							else {
+								cur = cur->parent;
+								key = cur->keys[0];
+							}
+							return *this;
+						}
+					}
+					if (cur->size == 2 && key == cur->keys[1]) {
+						key = cur->keys[0];
+					}
+					else {
+						if ((cur == cur->parent->second && !cur->parent->third) || cur == cur->parent->third) {
+							cur = cur->parent;
+							if (key > cur->keys[0])
+								key = cur->keys[1];
+							else
+								key = cur->keys[0];
+						}
+						else if (cur == cur->parent->first) {
+							while (cur->parent) cur = cur->parent;
+							if (key < cur->keys[1]) key = cur->keys[0];
+							else key = cur->keys[1];
+						}
+					}
+				}
+				else {
+					if (key == cur->keys[1] && cur->size == 2) {
+						cur = cur->second;
+					}
+					else {
+						cur = cur->first;
+					}
+					while (cur->third) cur = cur->third;
+					while (cur->second) cur = cur->second;
+					if (cur->size == 2) key = cur->keys[1];
+					else key = cur->keys[0];
+				}
+				counter--;
+			}
+			else
+				end(tree->root);
+			return *this;
+		};
+		T& operator*() { // перегрузка доступа по чтению/записи
+			return key;
+		}
+
+		bool operator==(const Iterator&); // перегрузка равенства
+		bool operator!=(const Iterator&); // перегрузка неравенства
+	};
+	
+	class ReverseIterator // внутренний класс - итератор
+	{
+	private:
+		Node* cur = nullptr;	// текущий индекс
+		Tree<T>* tree;
+		T key;
+		int counter = 1;
+	public:
+		ReverseIterator(Tree* tree) { // конструктор итератора
+			this->tree = tree;
+		};
+		ReverseIterator rbegin(Node* node) { // установка на последнее значение в массиве
+			if (node->third)
+				rbegin(node->third);
+			else if (node->second)
+				rbegin(node->second);
+			else {
+				cur = node;
+				if (node->size == 2) key = node->keys[1];
+				else key = node->keys[0];
+			}
+			counter = tree->counter;
+			return *this;
+		}
+		ReverseIterator rend(Node* node) { // установка на первое значение в массиве
+			if (node->first)
+				rend(node->first);
+			else {
+				cur = node;
+				key = node->keys[0];
+			}
+			counter = 1;
+			return *this;
+		}
+		ReverseIterator& operator--(int) { // перегрузка перемещения назад
+			if (tree->counter != counter) {
+				if (cur->isLeaf()) {
+					if (cur == cur->parent->first) {
+						if (cur->size == 1 || key == cur->keys[1]) {
+							cur = cur->parent;
+							key = cur->keys[0];
+							return *this;
+						}
+					}
+					if (cur->size == 2 && key == cur->keys[0]) {
+						key = cur->keys[1];
+					}
+					else {
+						if ((cur == cur->parent->second && !cur->parent->third) || cur == cur->parent->third) {
+							while(cur->parent) cur = cur->parent;
+							if (key > cur->keys[0])
+								key = cur->keys[1];
+							else
+								key = cur->keys[0];
+						}
+						else if (cur == cur->parent->second && cur->parent->third) {
+							cur = cur->parent;
+							key = cur->keys[1];
+						}
+					}
+				}
+				else {
+					if (key == cur->keys[1] && cur->size == 2) {
+						cur = cur->third;
+					}
+					else {
+						cur = cur->second;
+					}
+					while (cur->first) cur = cur->first;
+					key = cur->keys[0];
+				}
+				counter++;
+			}
+			else
+				rend(tree->root);
+			return *this;
+		};
+
+		ReverseIterator& operator++(int) { // перегрузка перемещения вперёд
+			if (tree->counter > 0) {
+				if (cur->isLeaf()) {
+					if (cur == cur->parent->third || cur == cur->parent->second) {
+						if (cur->size == 1 || key == cur->keys[0]) {
+							if (cur->parent->size == 2 && cur == cur->parent->third) {
+								cur = cur->parent;
+								key = cur->keys[1];
+							}
+							else {
+								cur = cur->parent;
+								key = cur->keys[0];
+							}
+							return *this;
+						}
+					}
+					if (cur->size == 2 && key == cur->keys[1]) {
+						key = cur->keys[0];
+					}
+					else {
+						if ((cur == cur->parent->second && !cur->parent->third) || cur == cur->parent->third) {
+							cur = cur->parent;
+							if (key > cur->keys[0])
+								key = cur->keys[1];
+							else
+								key = cur->keys[0];
+						}
+						else if (cur == cur->parent->first) {
+							while (cur->parent) cur = cur->parent;
+							if (key < cur->keys[1]) key = cur->keys[0];
+							else key = cur->keys[1];
+						}
+					}
+				}
+				else {
+					if (key == cur->keys[1] && cur->size == 2) {
+						cur = cur->second;
+					}
+					else {
+						cur = cur->first;
+					}
+					while (cur->third) cur = cur->third;
+					while (cur->second) cur = cur->second;
+					if (cur->size == 2) key = cur->keys[1];
+					else key = cur->keys[0];
+				}
+				counter--;
+			}
+			else
+				rbegin(tree->root);
+			return *this;
+		};
+		T& operator*() { // перегрузка доступа по чтению/записи
+			return key;
+		}
+
+		bool operator==(const ReverseIterator&); // перегрузка равенства
+		bool operator!=(const ReverseIterator&); // перегрузка неравенства
+	};
+
 protected:
-	Node* root;	// Корень дерева
+	Node* root = nullptr;	// Корень дерева
+	int counter = 0;
+	int prevNodeCounter = 0;
 };
 
 template <typename T>
 Tree<T>::Tree() {
-	Node* first = nullptr;
-	Node* second = nullptr;
-	Node* third = nullptr;
-	Node* fourth = nullptr;
-	Node* parent = nullptr;
+	root = nullptr;
+	counter = 0;
 }
 
 template <typename T>
 Tree<T>::Tree(int size) {
 	srand(time(NULL));
 	for (int i = 0; i < size; i++) {
-		T key = rand() % 100;
-		//Node* temp = contain(root, elem);
-		//while (temp && temp->key == elem) {
-			//elem = rand() % 100;
-		//}
+		T key = rand() % 100 - 50;
+		Node* temp = search(root, key);
+		while (temp && (temp->keys[0] == key || temp->keys[1] == key)) {
+			key = rand() % 100 - 50;
+		}
 		root = insert(root, key);
 	}
 }
 
-template <typename T>
-Tree<T>::~Tree() {
+template<typename T>
+Tree<T>::Tree(const Tree<T>& other) {	
+	copy(other.root);
+	prevNodeCounter = other.prevNodeCounter;
+	//counter = other.counter;
 }
 
+template <typename T>
+Tree<T>::~Tree() {
+	clear(getRoot());
+}
 
-// TODO
-// 1.1 Деструктор -_-
-// 1.2 Конструктор копировалки ;|
-// 2. ИтЕрАтОрЫ )00))0)
-// 3. Опрос числа просмотренных узлов предыдущей операцией :/
-// 4. Убрать повторные числа ^-^
-// 5. Трудоёмкость О_о
-// 6. Меню F
-// 7. Опрос размера дерева c==3
+template<typename T>
+Tree<T>& Tree<T>::operator=(const Tree<T>& other) {
+	clear(root);
+	copy(other.root);
+	prevNodeCounter = other.prevNodeCounter;
+	//counter = other.counter;
+	return *this;
+}
+
+template<typename T>
+bool Tree<T>::Iterator::operator==(const Iterator& i) {
+	return this.cur == i.cur;
+}
+
+template<typename T>
+bool Tree<T>::Iterator::operator!=(const Iterator& i) {
+	return this.cur != i.cur;
+}
+
+template<typename T>
+bool Tree<T>::ReverseIterator::operator==(const ReverseIterator& i) {
+	return this.cur == i.cur;
+}
+
+template<typename T>
+bool Tree<T>::ReverseIterator::operator!=(const ReverseIterator& i) {
+	return this.cur != i.cur;
+}
