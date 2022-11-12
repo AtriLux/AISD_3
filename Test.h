@@ -78,7 +78,9 @@ void test_rand(int n) {
 	// вывод размера дерева после теста
 	cout << "items count: " << tree.getCounter() << endl;
 	// вывод теоретической оценки трудоёмкости операций BST
-	cout << "1.39*log2(n) = " << 1.39 * (log((double)n) / log(2.0)) << endl;
+	//cout << "1.39*log2(n) = " << 1.39 * (log((double)n) / log(2.0)) << endl; // для дерева поиска
+	cout << "log2(n) = " << (log((double)n) / log(2.0)) << endl; // для сбалансированного дерева поиска
+	cout << "log3(n) = " << (log((double)n) / log(3.0)) << endl;
 	// вывод экспериментальной оценки трудоёмкости вставки
 	cout << "Count insert: " << I / (n / 2) << endl;
 	// вывод экспериментальной оценки трудоёмкости удаления

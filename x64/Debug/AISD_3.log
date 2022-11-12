@@ -1,8 +1,17 @@
 ﻿  AISD_3.cpp
 C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(12,18): warning C4838: Преобразование из "int" в "SHORT" требует сужающего преобразования.
 C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(12,21): warning C4838: Преобразование из "int" в "SHORT" требует сужающего преобразования.
-C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(503,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(502): message : во время компиляции функции-члена класс шаблон "Tree<int>::Tree(int)"
-C:\HWProjects\Course3\Semester5\AISD\AISD_3\AISD_3.cpp(5): message : выполняется компиляция ссылки на экземпляр шаблон функции "Tree<int>::Tree(int)"
-C:\HWProjects\Course3\Semester5\AISD\AISD_3\AISD_3.cpp(5): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "Tree<int>"
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Test.h(12,30): warning C4293: <<: отрицательное или слишком большое смещение; поведение не определено
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Test.h(17,26): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\AISD_3.cpp(142,4): warning C4101: item: неиспользованная локальная переменная
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\AISD_3.cpp(207): message : выполняется компиляция ссылки на экземпляр шаблон функции "Tree<int> print<int>(Tree<int>)"
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(839,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(838): message : во время компиляции функции-члена класс шаблон "Tree<int>::Tree(int)"
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\AISD_3.cpp(29): message : выполняется компиляция ссылки на экземпляр шаблон функции "Tree<int>::Tree(int)"
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(851): message : во время компиляции функции-члена класс шаблон "Tree<int>::Tree(const Tree<int> &)"
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\AISD_3.cpp(207): message : выполняется компиляция ссылки на экземпляр шаблон функции "Tree<int>::Tree(const Tree<int> &)"
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\AISD_3.cpp(18): message : выполняется компиляция ссылки на экземпляр класс шаблон функции "Tree<int>"
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(261): warning C4715: Tree<unsigned __int64>::search: значение возвращается не при всех путях выполнения
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\AISD_3.cpp(172): warning C4715: print<int>: значение возвращается не при всех путях выполнения
+C:\HWProjects\Course3\Semester5\AISD\AISD_3\Tree.h(261): warning C4715: Tree<int>::search: значение возвращается не при всех путях выполнения
   AISD_3.vcxproj -> C:\HWProjects\Course3\Semester5\AISD\AISD_3\x64\Debug\AISD_3.exe

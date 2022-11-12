@@ -116,7 +116,7 @@ public:
 	Tree<T>& operator=(const Tree<T>& other);
 
 	// Основные функции
-	void print(Node* root, int level = 0, int x = 50, int y = 0, int c = 0) { // c = 0 - корень, c = 1 - first, c = 2 - second
+	void print(Node* root, int level = 0, int x = 50, int y = 0, int c = 0) { // c = 0 - корень, c = 1 - first, c = 2 - second, с = 3 - third
 		if (root) {
 			if (level == 0) system("cls");
 

@@ -9,8 +9,11 @@ Tree<T> create() {
 	system("cls");
 	cout << "Введите кол-во элементов в дереве:" << endl;
 	int size = 0;
-	while (size <= 0 || size >= 15)
+	while (size <= 0 || size >= 15) {
+		system("cls");
+		cout << "Введите кол-во элементов в дереве:" << endl;
 		cin >> size;
+	}
 
 	Tree<int> tree;
 	
